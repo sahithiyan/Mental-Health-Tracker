@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mental Health Tracker</title>
+  <link rel="icon" type="image/x-icon" href="https://static.vecteezy.com/system/resources/previews/024/033/101/large_2x/the-seven-chakras-of-yoga-meditation-kundalini-energy-generative-ai-photo.jpg" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to left, #fff176, #ffd54f);
+      margin: 0;
+      padding: 20px;
+      transition: background 0.4s, color 0.4s;
+      color: #333;
+    }
+    /* Registration and Login Styles */
+section {
+  background-color: #fffde7;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #fbc02d;
+  color: #222;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #f9a825;
+}
+
+/* Hide OTP Section and Login Section initially */
+#otp-section, #login-section {
+  display: none;
+}
+
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    section {
+      background-color: #fffde7;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    select, textarea, input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #fbc02d;
+      color: #222;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #f9a825;
+    }
+
+    #chatbox {
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #fffde7;
+      height: 200px;
+      overflow-y: auto;
+    }
+
+    #user-input {
+      margin-top: 10px;
+    }
+
+    marquee {
+      font-weight: bold;
+      color: #f57f17;
+      margin-bottom: 20px;
+      background: #fff9c4;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    #countdown {
+      text-align: center;
+      font-size: 24px;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    /* 🌌 Relax Mode Styling */
+    .dark-mode {
+      background: linear-gradient(to right, #3e3e9e, #6a82fb);
+      color: #f0f0f0;
+    }
+
+    .dark-mode section {
+      background-color: #4b4b7c;
+    }
+
+    .dark-mode select,
+    .dark-mode textarea,
+    .dark-mode input {
+      background-color: #5d5d89;
+      color: white;
+    }
+
+    .dark-mode button {
+      background-color: #a5b4fc;
+      color: black;
+    }
+
+    .dark-mode #countdown {
+      color: #f0f8ff;
+    }
+
+    .toggle-button {
+      display: block;
+      margin: 0 auto 20px;
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .dark-mode .toggle-button {
+      background-color: #90caf9;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+    <!-- Registration Form -->
+<section id="registration-section">
+    <h2>Create Account</h2>
+    <form id="registration-form">
+      <input type="text" id="full-name" placeholder="Full Name" required />
+      <input type="text" id="address" placeholder="Address" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="date" id="dob" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required />
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Register</button>
+    </form>
+  </section>
+  
+  <!-- OTP Verification Section -->
+  <section id="otp-section" style="display: none;">
+    <h2>Email Verification</h2>
+    <input type="text" id="otp-input" placeholder="Enter OTP" />
+    <button onclick="verifyOTP()">Verify OTP</button>
+    <p id="otp-status"></p>
+  </section>
+  
+  <!-- Login Section -->
+  <section id="login-section" style="display: none;">
+    <h2>Login</h2>
+    <form id="login-form">
+      <input type="text" id="login-username" placeholder="Username" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </section>
+  
+
+  <h1>Mental Health Tracker</h1>
+  <button class="toggle-button" onclick="toggleDarkMode()">🌞 Switch to Relax Mode</button>
+
+  <!-- Marquee -->
+  <marquee behavior="scroll" direction="left">💚 You matter. Your feelings are valid. Keep going! 💚</marquee>
+
+  <!-- Mood Tracker -->
+  <section id="mood-tracker">
+    <h2>How are you feeling today?</h2>
+    <form onsubmit="event.preventDefault(); saveMood();">
+      <select id="mood">
+        <option value="happy">😊 Happy</option>
+        <option value="neutral">😐 Neutral</option>
+        <option value="sad">😢 Sad</option>
+        <option value="angry">😡 Angry</option>
+        <option value="frustrated">🤯 Frustrated</option>
+      </select>
+      <button type="submit">Save Mood</button>
+    </form>
+    <p id="mood-result"></p>
+    <hr>
+    <h3>Mood History</h3>
+    <ul id="mood-history"></ul>
+  </section>
+
+  <!-- Journal -->
+  <section id="journal">
+    <h2>Journal Your Thoughts</h2>
+    <form onsubmit="event.preventDefault(); saveJournal();">
+      <textarea id="journal-entry" rows="5" placeholder="Write your thoughts..."></textarea>
+      <button type="submit">Save Entry</button>
+    </form>
+    <p id="journal-result"></p>
+    <button onclick="exportJournal()">Export Journal</button>
+  </section>
+
+  <!-- Chatbot -->
+  <section id="chatbot">
+    <h2>Emotional Support Chatbot</h2>
+    <div id="chatbox">
+      <p><strong>Bot:</strong> Hi! How can I help you today?</p>
+    </div>
+    <input type="text" id="user-input" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </section>
+
+  <!-- Meditation Timer -->
+  <section id="meditation">
+    <h2>Meditation Timer</h2>
+    <label for="duration">Choose duration (minutes):</label>
+    <select id="duration">
+      <option value="1">1 Minute</option>
+      <option value="3">3 Minutes</option>
+      <option value="5">5 Minutes</option>
+      <option value="10">10 Minutes</option>
+    </select>
+    <button onclick="startMeditation()">Start Meditation</button>
+    <h3 id="countdown">⏳</h3>
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+    // Mood Tracker
+    function saveMood() {
+      const mood = document.getElementById("mood").value;
+      const date = new Date().toLocaleString();
+      let moodList = JSON.parse(localStorage.getItem("moodList")) || [];
+      moodList.push({ mood, date });
+      localStorage.setItem("moodList", JSON.stringify(moodList));
+      document.getElementById("mood-result").innerText = `Mood "${mood}" saved!`;
+      loadMoodHistory();
+    }
+
+    function loadMoodHistory() {
+      const list = JSON.parse(localStorage.getItem("moodList")) || [];
+      const historyEl = document.getElementById("mood-history");
+      historyEl.innerHTML = list.map(entry => `<li>${entry.date} — ${entry.mood}</li>`).join("");
+    }
+
+    // Journal
+    function saveJournal() {
+      const journal = document.getElementById("journal-entry").value.trim();
+      if (!journal) {
+        alert("Please write something before saving!");
+        return;
+      }
+
+      const timestamp = new Date().toLocaleString();
+      let entries = JSON.parse(localStorage.getItem("journals")) || [];
+      entries.push({ timestamp, journal });
+      localStorage.setItem("journals", JSON.stringify(entries));
+      document.getElementById("journal-result").innerText = "Your journal entry has been saved!";
+      document.getElementById("journal-entry").value = "";
+    }
+
+    function exportJournal() {
+      let entries = JSON.parse(localStorage.getItem("journals")) || [];
+      if (!entries.length) {
+        alert("No journal entries to export.");
+        return;
+      }
+      let content = entries.map(entry => `${entry.timestamp}\n${entry.journal}\n\n`).join("");
+      let blob = new Blob([content], { type: "text/plain" });
+      let link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "journal.txt";
+      link.click();
+    }
+
+    // Chatbot
+    function sendMessage() {
+      const input = document.getElementById("user-input");
+      const chatbox = document.getElementById("chatbox");
+      const message = input.value.trim();
+      if (!message) return;
+
+      chatbox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+      const response = getBotResponse(message);
+      setTimeout(() => {
+        chatbox.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }, 400);
+      input.value = "";
+    }
+
+    function getBotResponse(message) {
+      message = message.toLowerCase();
+      if (message.includes("sad")) return "I'm sorry you're feeling sad. Want to talk more?";
+      if (message.includes("angry")) return "It’s okay to feel angry. Let's try a breathing exercise.";
+      if (message.includes("happy")) return "That's awesome! Stay positive 🌟";
+      if (message.includes("frustrated")) return "Frustration is normal. Want to journal about it?";
+      if (message.includes("help")) return "You're not alone. I'm here for you.";
+      return "I'm listening... Tell me more.";
+    }
+
+    // Meditation Timer
+    let countdownInterval;
+
+    function startMeditation() {
+      const minutes = parseInt(document.getElementById("duration").value);
+      const totalSeconds = minutes * 60;
+      let remainingSeconds = totalSeconds;
+
+      document.getElementById("countdown").innerText = formatTime(remainingSeconds);
+
+      countdownInterval = setInterval(function() {
+        remainingSeconds--;
+        document.getElementById("countdown").innerText = formatTime(remainingSeconds);
+
+        // Play Aum sound when meditation starts
+const aumSound = new Audio("aum.mp3");
+aumSound.play();
+
+// After timer finishes, play Aum sound again
+aumSound.play();
+
+
+        if (remainingSeconds <= 0) {
+          clearInterval(countdownInterval);
+          alert("Meditation time is up! 🧘");
+        }
+      }, 1000);
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+    }
+
+    // Dark Mode
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      const button = document.querySelector(".toggle-button");
+      if (document.body.classList.contains("dark-mode")) {
+        button.innerText = "🌞 Switch to Light Mode";
+      } else {
+        button.innerText = "🌙 Switch to Relax Mode";
+      }
+    }
+
+    // Load mood history on page load
+    loadMoodHistory();
+  </script>
+  <script>
+    // Dummy OTP for simulation (in a real case, OTP would be sent via email)
+    let generatedOTP = Math.floor(100000 + Math.random() * 900000); // 6 digit OTP
+  
+    // Handle Registration Form Submission
+    document.getElementById("registration-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+  
+        // Get form data
+        const name = document.getElementById("full-name").value;
+        const email = document.getElementById("email").value;
+  
+        // Simulate sending OTP to the user's email
+        alert(`OTP has been sent to ${email}: ${generatedOTP}`);
+  
+        // Hide Registration Form and Show OTP Section
+        document.getElementById("registration-section").style.display = "none";
+        document.getElementById("otp-section").style.display = "block";
+    });
+  
+    // Handle OTP Verification
+    function verifyOTP() {
+        const otpInput = document.getElementById("otp-input").value;
+  
+        if (otpInput == generatedOTP) {
+            document.getElementById("otp-status").innerText = "OTP Verified! You can now login.";
+            document.getElementById("otp-section").style.display = "none";
+            document.getElementById("login-section").style.display = "block";
+        } else {
+            document.getElementById("otp-status").innerText = "Incorrect OTP, please try again.";
+        }
+    }
+  
+    // Handle Login Form Submission
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+  
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
+  
+        // Simulate successful login (in a real case, verify credentials on the server)
+        alert(`Logged in as ${username}`);
+        // Redirect to dashboard or show authenticated content
+    });
+  </script>
+  
+
+</body>
+</html>
